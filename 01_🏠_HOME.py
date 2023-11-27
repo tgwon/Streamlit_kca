@@ -6,7 +6,7 @@ import streamlit as st
 from PIL import Image
 import pandas as pd
 import random
-!pip install openpyxl
+
 
 #########################################중요###########################################
 # 터미널에서 명령어(streamlit run 01_🏠_HOME.py)를 실행 시켜주어야 스트림릿이 작동함
