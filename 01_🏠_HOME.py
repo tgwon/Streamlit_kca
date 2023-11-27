@@ -1,7 +1,8 @@
 #라이브러리 import
 #필요한 경우 install
+pip install streamlit_option_menu
 import streamlit as st
-#from streamlit_option_menu import option_menu
+from streamlit_option_menu import option_menu
 from PIL import Image
 import pandas as pd
 import random
