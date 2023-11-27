@@ -40,3 +40,9 @@ openpyxl==3.1.2
 pandas==2.0.3
 keybert==0.7.0
 matplotlib==3.6.3
+plotly==5.16.1
+numpy==1.25.2
+seaborn==0.12.2
+konlpy==0.6.0
+wordcloud==1.9.1.1
+sklearn==0.0.post1
