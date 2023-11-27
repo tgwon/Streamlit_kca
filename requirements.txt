@@ -2,3 +2,5 @@ keybert
 streamlit
 streamlit_option_menu
 openpyxl
+pandas
+numpy
