@@ -46,3 +46,4 @@ seaborn==0.12.2
 konlpy==0.6.0
 wordcloud==1.9.1.1
 sklearn==0.0.post1
+PyKomoran==0.1.6.post1
