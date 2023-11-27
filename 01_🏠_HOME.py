@@ -26,7 +26,7 @@ st.sidebar.image(image3, use_column_width=True)
 
 #최상단에 이미지 넣기
 st.image(image2, width=300) 
-st.image(image, width=1800) 
+st.image(image, width=1200) 
 
 #st.markdown('''
 #<h2>Daily News Service by <span style="color: #6FA8DC;"> CAUsumer</span></h2>
