@@ -53,7 +53,7 @@ random_titles = daily_result['title'].sample(n=3)
 
 df = pd.read_csv("data/상담다발품목.csv")
 
-recall = pd.read_excel('data/국내 리콜.xlsx')
+recall = pd.read_csv('data/국내 리콜.csv')
 
 
 
