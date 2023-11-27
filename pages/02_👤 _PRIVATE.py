@@ -16,6 +16,7 @@ import pandas as pd
 import time
 from konlpy.tag import Twitter
 from konlpy.tag import Okt
+from konlpy.tag import Kkma
 from collections import Counter
 from wordcloud import WordCloud
 import re
@@ -151,8 +152,8 @@ with col1:
             st.subheader("👀 시각화")
 
             #워드클라우드에 사용하기 위해 명사만 추출
-            okt = Okt()
-            nouns = okt.nouns(daily_result.content[top_indices].iloc[0])
+            kkma = Kkma()
+            nouns = kkma.nouns(daily_result.content[top_indices].iloc[0])
 
             #필요하다면 불용어 지정 가능
             #stop_words = ""
