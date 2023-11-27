@@ -152,8 +152,10 @@ with col1:
             st.subheader("👀 시각화")
 
             #워드클라우드에 사용하기 위해 명사만 추출
-            kkma = Kkma()
-            nouns = kkma.nouns(daily_result.content[top_indices].iloc[0])
+            #kkma = Kkma()
+            # Komoran 객체 생성
+            komoran = Komoran("EXP")
+            nouns = komoran.get_morphes_by_tags(daily_result.content[top_indices].iloc[0], tag_list=['NNP', 'NNG'])
 
             #필요하다면 불용어 지정 가능
             #stop_words = ""
