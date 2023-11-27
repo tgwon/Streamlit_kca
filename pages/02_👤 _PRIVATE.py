@@ -100,6 +100,8 @@ input_user_name = st.text_input(label="**고객 ID를 먼저 입력하신 뒤 �
 #client_fv에 들어있는 고객ID인지 판단
 if input_user_name == '':
     time.sleep(1)
+    is_included = True
+    st.warning("올바른 고객ID가 아닙니다. 다시 입력해주세요.")
 else:
     is_included = int(input_user_name) in client_fv['고객ID'].values
 ########################################################################################################################################
