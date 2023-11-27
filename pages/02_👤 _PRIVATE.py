@@ -157,7 +157,7 @@ with col1:
             #워드클라우드에 사용하기 위해 명사 추출된 거 가져오기
             #배포시 Konlpy, Pykomoran은 java 환경변수 이슈 때문에 사용 불가. 로컬에서 명사 추출 후 데이터프레임에 추가해서 사용.
             
-            words = daily_result.wc[top_indices]
+            words = daily_result.wc[top_indices[0]]
 
             # 위에서 얻은 words를 처리하여 단어별 빈도수 형태의 딕셔너리 데이터를 구성
             c = Counter(words) 
