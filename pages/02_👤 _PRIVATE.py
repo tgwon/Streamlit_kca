@@ -164,7 +164,7 @@ with col1:
 
             # wordcloud
             wordcloud = WordCloud(
-                font_path = 'malgun.ttf',
+                #font_path = 'malgun.ttf',
                 background_color='white', 
                 colormap='Blues' 
             ).generate_from_frequencies(c)
