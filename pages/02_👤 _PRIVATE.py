@@ -66,7 +66,7 @@ client_fv = load_client_fv_data()
 @st.cache_data
 def daily_result_load_data():
 
-    daily_result = pd.read_csv("data/new_daily_result.csv", converters={'fv': parse_list,  'subsubtitle' : parse_list})
+    daily_result = pd.read_csv("data/new_daily_result.csv", converters={'fv': parse_list,  'subsubtitle' : parse_list, 'wc' : parse_list})
 
     return daily_result
 
@@ -154,18 +154,10 @@ with col1:
 ########################################################################################################################################     
             st.subheader("👀 시각화")
 
-            #워드클라우드에 사용하기 위해 명사만 추출
-            #kkma = Kkma()
-            # Komoran 객체 생성
-            komoran = Komoran("EXP")
-            nouns = komoran.get_morphes_by_tags(daily_result.content[top_indices].iloc[0], tag_list=['NNP', 'NNG'])
-
-            #필요하다면 불용어 지정 가능
-            #stop_words = ""
-            #stop_words = set(stop_words.split(' '))
+            #워드클라우드에 사용하기 위해 명사 추출된 거 가져오기
+            #배포시 Konlpy, Pykomoran은 java 환경변수 이슈 때문에 사용 불가. 로컬에서 명사 추출 후 데이터프레임에 추가해서 사용.
             
-            # 단어의 길이가 1개인 것은 제외
-            words = [n for n in nouns if len(n) > 1] 
+            words = daily_result.wc[top_indices]
 
             # 위에서 얻은 words를 처리하여 단어별 빈도수 형태의 딕셔너리 데이터를 구성
             c = Counter(words) 
