@@ -45,5 +45,5 @@ numpy==1.25.2
 seaborn==0.12.2
 konlpy==0.6.0
 wordcloud==1.9.1.1
-sklearn==0.0.post1
+scikit-learn==1.2.1
 PyKomoran==0.1.6.post1
