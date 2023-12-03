@@ -101,7 +101,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                     ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565892_20231202053014578.jpg'
                     ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565860_20231201053011419.jpg'
                     ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000562223_20230923053015919.jpg']
-    recall_product_list = ['동물 슬리퍼','빠투능','큰맘 해장국','에너스웰 캡슐']
+    recall_product_list = ['동물슬리퍼','빠투능','큰맘해장국','에너스웰캡슐']
     recall_company_list = ['(주) 현주무역','(주) 씨암푸드','(주) 포듀미트','영풍제약(주)']
     recall_date_list = ['23.11.14~','~24.11.22','~24.11.12','~24.01.24']
 
