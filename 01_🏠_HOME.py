@@ -3,11 +3,11 @@
 #######################################################################################
 
 import streamlit as st
-import hydralit_components as hc
+import streamlit.components.v1 as components
+
 from PIL import Image
 import pandas as pd
 import random
-import streamlit.components.v1 as components
 
 #페이지를 위한 코드
 #layout = wide : 화면 설정 디폴트값을 와이드로
@@ -32,9 +32,8 @@ st.markdown(
 
 with st.spinner("# ⏳ 잠시만 기다려주세요."):
 
-    image = Image.open('images/logo.png')
+    image = Image.open('images/logo1.png')
     image2 = Image.open('images/logo2.png')
-    image3 = Image.open('images/face.png')
 
     #메뉴 탭 하단 사이드바에 이미지 넣기
     st.sidebar.image(image2, use_column_width=True)
@@ -44,47 +43,76 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
 
     #리스트를 문자열로 인식하는 문제 해결하는 함수
     def parse_list(input_str):
-
         return eval(input_str)
 
-
     @st.cache_data
-    def daily_result_load_data():
+    def load_data():
 
-        #daily news 전처리 및 모델링 결과
-        daily_result = pd.read_csv("data/new_daily_result.csv", converters={'fv': parse_list})
+        # 보도자료
+        # fv : 모델링 결과
+        # wc : 배포시 konlpy java 환경변수 오류 때문에 명사 추출 결과를 컬럼에 미리 담아놓음
+        df1 = pd.read_csv("data/보도자료.csv", converters={'fv' : parse_list, 'wc' : parse_list})
 
-        return daily_result
+        # 상담다발품목
+        df2 = pd.read_csv("data/상담다발품목.csv")
 
-    daily_result = daily_result_load_data()
+         # 소비자 단어
+        df3 = pd.read_csv("data/소비자단어.csv")
 
-    # 리콜 정보
-    # df1 = pd.read_excel('data/국내 리콜.xlsx')
+        return df1,df2,df3
 
-    # 소비자 단어
-    df2 = pd.read_csv("data/consumer_word.csv")
+    df1, df2, df3 = load_data()
 
-    # 상담다발품목
-    df = pd.read_csv("data/상담다발품목.csv")
-    
+    # Home 화면에서 랜덤으로 보여줄 보도자료 정보 담아두기
+    random1 = df1[['title','subtitle']].sample(n=3, replace=False) 
+    news1 = random1.title.values[0]
+    subnews1 = random1.subtitle.values[0]
+    news2 = random1.title.values[1]
+    subnews2 = random1.subtitle.values[1]
+    news3 = random1.title.values[2]
+    subnews3 = random1.subtitle.values[2]
+
+
+    # Home 화면에서 랜덤으로 보여줄 상담다발품목 정보 담아두기
+    # 품목, 피해유형, 거래유형
+    random2 = df2[['GDNM','CNSL_RSN','SLL_MTD_NM']].sample(n=4, replace=False) 
+    product1 = random2.GDNM.values[0]
+    type11 = random2.CNSL_RSN.values[0]
+    type21 = random2.SLL_MTD_NM.values[0]
+    product2 = random2.GDNM.values[1]
+    type12 = random2.CNSL_RSN.values[1]
+    type22 = random2.SLL_MTD_NM.values[1]
+    product3 = random2.GDNM.values[2]
+    type13 = random2.CNSL_RSN.values[2]
+    type23 = random2.SLL_MTD_NM.values[2]
+    product4 = random2.GDNM.values[3]
+    type14 = random2.CNSL_RSN.values[3]
+    type24 = random2.SLL_MTD_NM.values[3]
+
+    # Home 화면에서 랜덤으로 보여줄 소비자단어 정보 담아두기
+    random3 = df3[['단어','뜻','url']].sample(n=1, replace=False) 
+    word1 = random3.단어.values[0]
+    word2 = random3.뜻.values[0]
+    word3 = random3.url.values[0]
+
+    # Home 화면에서 랜덤으로 보여줄 리콜 정보 변수에 담아두기
+    random_number = random.randint(0, 3)
+    recall_image_list = ['https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565212_20231121030002601.jpg'
+                    ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565892_20231202053014578.jpg'
+                    ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565860_20231201053011419.jpg'
+                    ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000562223_20230923053015919.jpg']
+    recall_product_list = ['동물 슬리퍼','빠투능','큰맘 해장국','에너스웰캡슐']
+    recall_company_list = ['(주) 현주무역','(주) 씨암푸드','(주) 포듀미트','영풍제약(주)']
+    recall_date_list = ['2023.11.14~','~2024.11.22','~2024.11.12','~2024.01.24']
+
+
     # CDN 가능
     # Bootstrap
     # 문자열 포매팅을 활용하여 변수 지정 후 HTML로 표현
 
-    random_number = random.randint(0, 2)
-    recall_image_list = ['https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565212_20231121030002601.jpg'
-                    ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565892_20231202053014578.jpg'
-                    ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565860_20231201053011419.jpg']
-    recall_product_list = ['동물 슬리퍼','빠투능','큰맘 해장국']
-    recall_company_list = ['(주) 현주무역','(주) 씨암푸드','(주) 포듀미트']
-    recall_date_list = ['2023.11.14~', '~2024.11.22','~2024.11.12']
-
-    random_titles = daily_result['title'].sample(n=3) 
-    news1 = random_titles.values[0]
-    news2 = random_titles.values[1]
-    news3 = random_titles.values[2]
-
+    st.write('')
     cc = st.columns(3)
+
     with cc[0]:
         components.html(
         f"""
@@ -98,14 +126,16 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 32.5rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 31rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
             </style>
             <h5 class="card-title"><strong>🗞 보도자료</strong></h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">아래는 보도자료의 제목입니다. </h6>
-            <p class="card-text"><strong>{news1}</strong></p>
+            <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
+            <p class="card-text"><strong>"{news1}"</strong></p>
+            <h6 class="card-subtitle mb-2 text-body-secondary">: {subnews1}</h6>
+            <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
             <style>
             .link-card {{
                 display: flex;
@@ -133,7 +163,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </body>
         </html>
         """
-        ,height=300
+        ,height=340
         )
 
 
@@ -149,13 +179,14 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
             <font size=5>
-                <div class="card" style="width: 32.5rem; background-color: #F0FAFF;">
+                <div class="card" style="width: 31rem; background-color: #F0FAFF;">
                     <img src="{recall_image_list[random_number]}" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <h5 class="card-title"></h5>
-                        <font size=6>
-                            <p class="card-text"><strong>📰 국내리콜정보</strong></p>
-                        </font></br>
+                    <style>
+                        .card-title strong {{font-size: 2em;}}
+                    </style>
+                    <h5 class="card-title"><strong>📰 국내리콜정보</strong></h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
                         <table class="table">
                             <thead>
                                 <td class="table-secondary"><strong>제품명</strong></td>
@@ -199,61 +230,242 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </body>
         </html>
         """
-        ,height=800
+        ,height=700
         )
     
     with cc[1]:
-        st.write('')
+        components.html(
+        f"""
+        <!doctype html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Bootstrap demo</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        </head>
+        <body>
+        <font size=5>
+        <div class="card" style="width: 31rem; background-color: #F0FAFF;">
+        <div class="card-body">
+            <style>
+                .card-title strong {{font-size: 2em;}}
+            </style>
+            <h5 class="card-title"><strong>🔊 피해예방주의보</strong></h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
+            <p class="card-text"><strong>"{news2}"</strong></p>
+            <h6 class="card-subtitle mb-2 text-body-secondary">: {subnews2}</h6>
+            <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp;</h6>
+            <style>
+            .link-card {{
+                display: flex;
+                flex-direction: column;
+                padding: 5px;
+                margin-bottom: 10px;
+                border: 1px solid #E8DDDA;
+                border-radius: 15px;
+                background-color: white; 
+                box-shadow: 0px 0px 5px #F4EDEC;
+            }}
+            .link-card:hover {{
+            background-color: #DEEFFF;
+            }}
+            a {{
+                color: black!important;
+                text-decoration: none!important;
+            }}
+            </style>
+            <div class="link-card"><a href="https://www.consumer.go.kr/consumer/index.do" target="_blank">🔍 더 많은 정보를 알아보세요.</a></div>
+        </div>
+        </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        </font></br>
+        </body>
+        </html>
+        """
+        ,height=340
+        )
+
+        components.html(
+        f"""
+        <!doctype html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Bootstrap demo</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        </head>
+        <body>
+        <font size=5>
+        <div class="card" style="width: 31rem; background-color: #F0FAFF;">
+        <div class="card-body">
+            <style>
+                .card-title strong {{font-size: 2em;}}
+            </style>
+            <h5 class="card-title"><strong>🧺 상담다발품목</strong></h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
+            <table class="table">
+            <thead>
+                <td class="table-secondary"><strong>품목</strong></td>
+                <td class="table-secondary"><strong>피해유형</strong></td>
+                <td class="table-secondary"><strong>거래유형</strong></td>
+            </thead>
+            <tbody>
+                <tr>
+                <td>{product1}</td>
+                <td>{type11}</td>
+                <td>{type21}</td>
+                </tr>
+                <tr>
+                <td>{product2}</td>
+                <td>{type12}</td>
+                <td>{type22}</td>
+                </tr>
+                <tr>
+                <td>{product3}</td>
+                <td>{type13}</td>
+                <td>{type23}</td>
+                </tr>
+                <tr>
+                <td>{product4}</td>
+                <td>{type14}</td>
+                <td>{type24}</td>
+                </tr>
+            </tbody>
+            </table>
+            <style>
+            .link-card {{
+                display: flex;
+                flex-direction: column;
+                padding: 5px;
+                margin-bottom: 10px;
+                border: 1px solid #E8DDDA;
+                border-radius: 15px;
+                background-color: white; 
+                box-shadow: 0px 0px 5px #F4EDEC;
+            }}
+            .link-card:hover {{
+            background-color: #DEEFFF;
+            }}
+            a {{
+                color: black!important;
+                text-decoration: none!important;
+            }}
+            </style>
+            <div class="link-card"><a href="https://crossborder.kca.go.kr/home/sub.do?menukey=134" target="_blank">🔍 더 많은 정보를 알아보세요.</a></div>
+        </div>
+        </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        </font></br>
+        </body>
+        </html>
+        """
+        ,height=700
+        )
+
     with cc[2]:
-        st.write('')
+        components.html(
+        f"""
+        <!doctype html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Bootstrap demo</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        </head>
+        <body>
+        <font size=5>
+        <div class="card" style="width: 31rem; background-color: #F0FAFF;">
+        <div class="card-body">
+            <style>
+                .card-title strong {{font-size: 2em;}}
+            </style>
+            <h5 class="card-title"><strong>🔊 소비자 안전주의보</strong></h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
+            <p class="card-text"><strong>"{news3}"</strong></p>
+            <h6 class="card-subtitle mb-2 text-body-secondary">: {subnews3}</h6>
+            <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
+            <style>
+            .link-card {{
+                display: flex;
+                flex-direction: column;
+                padding: 5px;
+                margin-bottom: 10px;
+                border: 1px solid #E8DDDA;
+                border-radius: 15px;
+                background-color: white; 
+                box-shadow: 0px 0px 5px #F4EDEC;
+            }}
+            .link-card:hover {{
+            background-color: #DEEFFF;
+            }}
+            a {{
+                color: black!important;
+                text-decoration: none!important;
+            }}
+            </style>
+            <div class="link-card"><a href="https://www.consumer.go.kr/consumer/index.do" target="_blank">🔍 더 많은 정보를 알아보세요.</a></div>
+        </div>
+        </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        </font></br>
+        </body>
+        </html>
+        """
+        ,height=340
+        )
 
 
-    #can apply customisation to almost all the properties of the card, including the progress bar
-    theme = {'bgcolor': '#DEEFFF','title_color': 'black','content_color': 'black','icon_color': 'black', 'icon': 'fa fa-check-circle'}
-
-    c = st.columns(3)
-
-    with c[0]:
-        hc.info_card(title='🗞 보도자료', content='<' + random_titles.values[0]+ '>', theme_override=theme)
-        st.write('')
-
-    with c[1]:
-        hc.info_card(title='🔊 피해예방주의보', content='<' + random_titles.values[1] + '>', theme_override=theme)
-        
-    with c[2]:
-        hc.info_card(title='🔊 안전주의보', content='<' + random_titles.values[2] + '>', theme_override=theme)
-
-        random_row = df.sample(n=1) 
-        hc.info_card(title='📰 상담다발품목', content = '<' +random_row.MID_CLS.values[0]+ '>' + ' , ' + random_row.CNSL_RSN.values[0] + ' , ' + random_row.SLL_MTD_NM.values[0],theme_override=theme)
-
-    cc = st.columns([6,3])
-
-    with cc[0]:
-        # 데이터프레임에서 랜덤으로 하나의 행 선택
-        st.write("")
-    with cc[1]:
-        num_indices1 = len(df2)
-        # 랜덤으로 인덱스 3개 추출
-        random_indices1 = random.sample(range(num_indices1), 3)
-        hc.info_card(title='📚 오늘의 소비자 단어', content=f'"{df2.단어[random_indices1[0]]}"'+'\n'+f': {df2.뜻[random_indices1[0]]}', theme_override=theme)
-
-    st.write('')
-    st.write('## 👇 아래 소개를 참고해주세요')
-
-    # st.tab 함수를 통해 하단에 tab 메뉴 생성
-    tab1, tab2, tab3 = st.tabs([' **Who** ❓' , ' **Home**  🏠' , ' **PRIVATE**  👤'])
-
-    with tab1:
-        st.header('Team  소개')
-        st.image(image3, width=200)
-        st.write("### 안녕하세요, 저희는 **중앙대학교 응용통계학과 학생들** 입니다.")
-        st.text('')
-        st.write("### 빅데이터 분석 공모전 **소비자** 부문으로 참가하며 이 서비스를 기획하게 되었습니다.")
-        st.write("### **소비자들**의 결제 데이터와 **한국소비자원의 보도자료**를 이용한 다양한 서비스를 제공합니다.")
-
-    with tab2:
-        st.header('Home 화면 소개')
-
-    with tab3:
-        st.header('Private 화면 소개')
-
+        components.html(
+        f"""
+        <!doctype html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Bootstrap demo</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        </head>
+        <body>
+        <font size=5>
+        <div class="card" style="width: 31rem; background-color: #F0FAFF;">
+        <div class="card-body">
+            <style>
+                .card-title strong {{font-size: 2em;}}
+            </style>
+            <h5 class="card-title"><strong>📚 오늘의 소비자 단어</strong></h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
+            <p class="card-text"><strong>"{word1}"</strong></p>
+            <p class="card-text"><strong>: {word2}</strong></p>
+            <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
+            <style>
+            .link-card {{
+                display: flex;
+                flex-direction: column;
+                padding: 5px;
+                margin-bottom: 10px;
+                border: 1px solid #E8DDDA;
+                border-radius: 15px;
+                background-color: white; 
+                box-shadow: 0px 0px 5px #F4EDEC;
+            }}
+            .link-card:hover {{
+            background-color: #DEEFFF;
+            }}
+            a {{
+                color: black!important;
+                text-decoration: none!important;
+            }}
+            </style>
+            <div class="link-card"><a href={word3} target="_blank">🔍 네이버 지식백과로 바로가기</a></div>
+        </div>
+        </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        </font></br>
+        </body>
+        </html>
+        """
+        ,height=500
+        )
