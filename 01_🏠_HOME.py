@@ -105,13 +105,12 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
     recall_company_list = ['(주) 현주무역','(주) 씨암푸드','(주) 포듀미트','영풍제약(주)']
     recall_date_list = ['2023.11.14~','~2024.11.22','~2024.11.12','~2024.01.24']
 
+    st.write('')
+    cc = st.columns(3)
 
     # CDN 가능
     # Bootstrap
     # 문자열 포매팅을 활용하여 변수 지정 후 HTML로 표현
-
-    st.write('')
-    cc = st.columns(3)
 
     with cc[0]:
         components.html(
@@ -126,7 +125,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 31rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 30.7rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
@@ -179,7 +178,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
             <font size=5>
-                <div class="card" style="width: 31rem; background-color: #F0FAFF;">
+                <div class="card" style="width: 30.7rem; background-color: #F0FAFF;">
                     <img src="{recall_image_list[random_number]}" class="card-img-top" alt="...">
                     <div class="card-body">
                     <style>
@@ -246,7 +245,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 31rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 30.7rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
@@ -298,7 +297,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 31rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 30.7rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
@@ -377,7 +376,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 31rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 30.7rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
@@ -430,7 +429,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 31rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 30.7rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
