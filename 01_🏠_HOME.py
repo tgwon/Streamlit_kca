@@ -101,9 +101,9 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                     ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565892_20231202053014578.jpg'
                     ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565860_20231201053011419.jpg'
                     ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000562223_20230923053015919.jpg']
-    recall_product_list = ['동물 슬리퍼','빠투능','큰맘 해장국','에너스웰캡슐']
-    recall_company_list = ['(주) 현주무역','(주) 씨암푸드','(주) 포듀미트','영풍제약']
-    recall_date_list = ['2023.11.14~','~2024.11.22','~2024.11.12','~2024.01.24']
+    recall_product_list = ['동물 슬리퍼','빠투능','큰맘 해장국','에너스웰 캡슐']
+    recall_company_list = ['(주) 현주무역','(주) 씨암푸드','(주) 포듀미트','영풍제약(주)']
+    recall_date_list = ['23.11.14~','~24.11.22','~24.11.12','~24.01.24']
 
     st.write('')
     cc = st.columns(3)
@@ -162,7 +162,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </body>
         </html>
         """
-        ,height=340
+        ,height=345
         )
 
 
@@ -220,7 +220,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                             text-decoration: none!important;
                         }}
                         </style>
-                        <div class="link-card"><a href="https://www.consumer.go.kr/consumer/index.do" target="_blank">🔍 소비자24에서 더 자세히 알아보세요.</a></div>
+                        <div class="link-card"><a href="https://www.consumer.go.kr/consumer/index.do" target="_blank">🔍 소비자24로 바로가기</a></div>
                     </div>
                 </div>
             </font></br>
@@ -282,7 +282,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </body>
         </html>
         """
-        ,height=340
+        ,height=345
         )
 
         components.html(
@@ -413,7 +413,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </body>
         </html>
         """
-        ,height=340
+        ,height=345
         )
 
 
