@@ -22,7 +22,7 @@ st.markdown(
             margin: 0;
         }
         .stApp {
-            max-width: 2000px;  # 조정하려는 최대 너비
+            max-width: 2300px;  # 조정하려는 최대 너비
             margin: auto;
         }
     </style>
@@ -39,7 +39,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
     st.sidebar.image(image2, use_column_width=True)
 
     #최상단에 이미지 넣기
-    st.image(image, width=1590) 
+    st.image(image, width=1730) 
 
     #리스트를 문자열로 인식하는 문제 해결하는 함수
     def parse_list(input_str):
@@ -101,8 +101,8 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                     ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565892_20231202053014578.jpg'
                     ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000565860_20231201053011419.jpg'
                     ,'https://www.consumer.go.kr/site/consumer/upload/recall/RCLL_000000000562223_20230923053015919.jpg']
-    recall_product_list = ['동물슬리퍼','빠투능','큰맘해장국','에너스웰캡슐']
-    recall_company_list = ['(주)현주무역','(주)씨암푸드','(주)포듀미트','영풍제약']
+    recall_product_list = ['동물 슬리퍼','빠투능','큰맘 해장국','에너스웰 캡슐']
+    recall_company_list = ['(주) 현주무역','(주) 씨암푸드','(주) 포듀미트','영풍제약']
     recall_date_list = ['23.11.14~','~24.11.22','~24.11.12','~24.01.24']
 
     st.write('')
@@ -125,7 +125,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 30rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
@@ -178,7 +178,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
             <font size=5>
-                <div class="card" style="width: 30rem; background-color: #F0FAFF;">
+                <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
                     <img src="{recall_image_list[random_number]}" class="card-img-top" alt="...">
                     <div class="card-body">
                     <style>
@@ -245,7 +245,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 30rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
@@ -297,7 +297,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 30rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
@@ -376,7 +376,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 30rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
@@ -429,7 +429,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </head>
         <body>
         <font size=5>
-        <div class="card" style="width: 30rem; background-color: #F0FAFF;">
+        <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
                 .card-title strong {{font-size: 2em;}}
