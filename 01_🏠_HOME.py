@@ -4,7 +4,6 @@
 
 import streamlit as st
 import streamlit.components.v1 as components
-
 from PIL import Image
 import pandas as pd
 import random
@@ -45,6 +44,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
     def parse_list(input_str):
         return eval(input_str)
 
+    #화면이 업데이트될 때 마다 변수 할당이 된다면 시간이 오래 걸려서 @st.cache_data 사용(캐싱)
     @st.cache_data
     def load_data():
 
