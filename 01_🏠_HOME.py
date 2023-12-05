@@ -154,7 +154,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                 text-decoration: none!important;
             }}
             </style>
-            <div class="link-card"><a href="https://www.consumer.go.kr/consumer/index.do" target="_blank">🔍 더 많은 정보를 알아보세요.</a></div>
+            <div class="link-card"><a href="https://www.kca.go.kr/home/main.do" target="_blank">🔍 더 많은 정보를 알아보세요.</a></div>
         </div>
         </div>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
@@ -274,7 +274,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                 text-decoration: none!important;
             }}
             </style>
-            <div class="link-card"><a href="https://www.consumer.go.kr/consumer/index.do" target="_blank">🔍 더 많은 정보를 알아보세요.</a></div>
+            <div class="link-card"><a href="https://www.kca.go.kr/home/main.do" target="_blank">🔍 더 많은 정보를 알아보세요.</a></div>
         </div>
         </div>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
@@ -405,7 +405,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                 text-decoration: none!important;
             }}
             </style>
-            <div class="link-card"><a href="https://www.consumer.go.kr/consumer/index.do" target="_blank">🔍 더 많은 정보를 알아보세요.</a></div>
+            <div class="link-card"><a href="https://www.kca.go.kr/home/main.do" target="_blank">🔍 더 많은 정보를 알아보세요.</a></div>
         </div>
         </div>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
