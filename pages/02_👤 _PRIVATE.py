@@ -91,174 +91,166 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
     input_user_name = st.text_input(label="**고객 ID 예시) 20 : 20대 남자 , 41 : 40대 여자**", value = "") 
 
     if st.button("📰 추천 받기"):
-        try:
-            if input_user_name != '':
-                # 고객-보도자료 간의 코사인 유사도 계산
-                cosine_similarities = [cos_sim(df2[df2.고객ID == int(input_user_name)]['feature'].iloc[0], fv) for fv in df1.fv]
-                
-                # 가장 유사한 보도자료 상위 3개 값의 인덱스 찾기
-                top_indices = sorted(range(len(df1)), key=lambda i: cosine_similarities[i], reverse=True)[:3]
-
-                # 변수에 할당할 개수를 리스트의 길이에 맞게 조절 2개 이상이면 2개로. 1개는 오류남.
-                s1, s2, *_= df1.subsubtitle[top_indices[0]]
-
-                # KeyBERT
-                # 키워드 3개
-                n=3 
-                kw_model = KeyBERT()
-                keywords_mmr = kw_model.extract_keywords(df1.content[top_indices[0]],
-                                                        keyphrase_ngram_range=(1,1),
-                                                                use_mmr = False,
-                                                                top_n = n,
-                                                                diversity = 0.2,
-                                                                stop_words = [''])
-                # 워드클라우드`
-                words = df1.wc[top_indices[0]]
-
-                # 단어별 빈도수 형태의 딕셔너리 데이터를 구성
-                c = Counter(words) 
-
-                # 워드클라우드 생성 함수
-                def generate_wordcloud(c):
-                    wordcloud = WordCloud(
-                                width=750,
-                                height=450,
-                                font_path = 'malgun.ttf',
-                                background_color='white'#, 
-                                #colormap='Blues' 
-                                        ).generate_from_frequencies(c)
-
-                    # 이미지를 바이트 형식으로 변환하여 Base64로 인코딩
-                    img_buffer = BytesIO()
-                    wordcloud.to_image().save(img_buffer, format='PNG')
-                    img_str = "data:image/png;base64," + base64.b64encode(img_buffer.getvalue()).decode()
-
-                    return img_str
-
-                # 워드클라우드 생성
-                wordcloud_html = generate_wordcloud(c)
-
-
-                # 서브플롯 생성
-                fig = make_subplots(rows=1, cols=2, subplot_titles=['지출 분석', '보도자료 분석'], specs=[[{'type': 'pie'}, {'type': 'pie'}]])
-
-                value_a = df2[df2.고객ID == int(input_user_name)]['feature'].iloc[0]
-                data1 = {'category' : ['여행', '취미', 'IT_전자', '생활', '패션_뷰티', '교육', '의료', '외식'],
-                        'value' : value_a }
-                figdf1 = pd.DataFrame(data1)
-
-                fig1 = px.pie(figdf1
-                                , names='category'
-                                , values='value'
-                                , width=600
-                                , height=400
-                                , color_discrete_map={'여행': 'lightblue', '취미': 'lightgreen', 'IT_전자': 'lightcoral', '생활': 'lightskyblue', '패션_뷰티': 'lightpink', '교육': 'lightyellow', '의료': 'lightcyan', '외식': 'lightgrey'})
-                
-                fig1.update_layout(
-                    title = '지출 분석',
-                    legend_yanchor="top",
-                    legend_y=1,
-                    legend_xanchor="left",
-                    legend_x=-0.1,
-                    template='plotly_white'
-                )
-
-                value_b = df1.fv[top_indices[0]]
-                data2 = {'category' : ['여행', '취미', 'IT_전자', '생활', '패션_뷰티', '교육', '의료', '외식'],
-                        'value' : value_b }
-                figdf2 = pd.DataFrame(data2)
-
-                fig2 = px.pie(figdf2
-                                , names='category'
-                                , values='value'
-                                , width=600
-                                , height=400
-                                , color_discrete_map={'여행': 'lightblue', '취미': 'lightgreen', 'IT_전자': 'lightcoral', '생활': 'lightskyblue', '패션_뷰티': 'lightpink', '교육': 'lightyellow', '의료': 'lightcyan', '외식': 'lightgrey'})
-                
-                fig2.update_layout(
-                    title = '보도자료 분석',
-                    legend_yanchor="top",
-                    legend_y=1,
-                    legend_xanchor="left",
-                    legend_x=-0.1,
-                    template='plotly_white'
-                )
-
-                # 서브플롯에 추가
-                fig.add_trace(fig1['data'][0], row=1, col=1)
-                fig.add_trace(fig2['data'][0], row=1, col=2)
-
-                fig.update_layout(
-                    template='plotly_white'
-                )
-
-                # Plotly 그래픽을 HTML로 변환
-                html_plot = pio.to_html(fig, full_html=False)
-
-                sim = round(cos_sim(value_a, value_b) * 100, 1)
-
-                st.info(f'**안녕하세요🙂 소비 패턴 분석을 통해 3개의 보도자료가 추천되었습니다.**')
-
-                components.html(
-                f"""
-                <!doctype html>
-                <html lang="en">
-                <head>
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1">
-                    <title>Bootstrap demo</title>
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-                </head>
-                <body>
-                    <div class="accordion accordion-flush" id="accordionFlushExample">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                <strong>1st</strong>
-                            </button>
-                            </h2>
-                            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">
-                            <font size=5>
-                            <font size=6><strong>📰 제목</strong></font><br>&nbsp"{df1.title[top_indices].iloc[0]}"<br><br>
-                            <font size=6><strong>📝 요약</strong></font><br>&nbsp{s1}<br>&nbsp{s2}<br><br>
-                            <font size=6><strong>🔑 키워드</strong></font><br><strong>&nbsp#</strong>{keywords_mmr[0][0]}<strong>&nbsp#</strong>{keywords_mmr[1][0]}<strong>&nbsp#</strong>{keywords_mmr[2][0]}<br><br>
-                            <font size=6><strong>👀 시각화</strong></font><br><br>&nbsp<img src="{wordcloud_html}" alt="wordcloud"><br><br>
-                            <font size=6><strong>✍ 분석결과 ➡ {sim}%</strong></font>{html_plot}<br><br>
-
-                            </font></br>    
-                            </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                <strong>2nd</strong>
-                            </button>
-                            </h2>
-                            <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                                <strong>3rd</strong>
-                            </button>
-                            </h2>
-                            <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
-                            </div>
-                        </div>
+        # 고객-보도자료 간의 코사인 유사도 계산
+        cosine_similarities = [cos_sim(df2[df2.고객ID == int(input_user_name)]['feature'].iloc[0], fv) for fv in df1.fv]
+        
+        # 가장 유사한 보도자료 상위 3개 값의 인덱스 찾기
+        top_indices = sorted(range(len(df1)), key=lambda i: cosine_similarities[i], reverse=True)[:3]
+    
+        # 변수에 할당할 개수를 리스트의 길이에 맞게 조절 2개 이상이면 2개로. 1개는 오류남.
+        s1, s2, *_= df1.subsubtitle[top_indices[0]]
+    
+        # KeyBERT
+        # 키워드 3개
+        n=3 
+        kw_model = KeyBERT()
+        keywords_mmr = kw_model.extract_keywords(df1.content[top_indices[0]],
+                                                keyphrase_ngram_range=(1,1),
+                                                        use_mmr = False,
+                                                        top_n = n,
+                                                        diversity = 0.2,
+                                                        stop_words = [''])
+        # 워드클라우드`
+        words = df1.wc[top_indices[0]]
+    
+        # 단어별 빈도수 형태의 딕셔너리 데이터를 구성
+        c = Counter(words) 
+    
+        # 워드클라우드 생성 함수
+        def generate_wordcloud(c):
+            wordcloud = WordCloud(
+                        width=750,
+                        height=450,
+                        font_path = 'malgun.ttf',
+                        background_color='white'#, 
+                        #colormap='Blues' 
+                                ).generate_from_frequencies(c)
+    
+            # 이미지를 바이트 형식으로 변환하여 Base64로 인코딩
+            img_buffer = BytesIO()
+            wordcloud.to_image().save(img_buffer, format='PNG')
+            img_str = "data:image/png;base64," + base64.b64encode(img_buffer.getvalue()).decode()
+    
+            return img_str
+    
+        # 워드클라우드 생성
+        wordcloud_html = generate_wordcloud(c)
+    
+    
+        # 서브플롯 생성
+        fig = make_subplots(rows=1, cols=2, subplot_titles=['지출 분석', '보도자료 분석'], specs=[[{'type': 'pie'}, {'type': 'pie'}]])
+    
+        value_a = df2[df2.고객ID == int(input_user_name)]['feature'].iloc[0]
+        data1 = {'category' : ['여행', '취미', 'IT_전자', '생활', '패션_뷰티', '교육', '의료', '외식'],
+                'value' : value_a }
+        figdf1 = pd.DataFrame(data1)
+    
+        fig1 = px.pie(figdf1
+                        , names='category'
+                        , values='value'
+                        , width=600
+                        , height=400
+                        , color_discrete_map={'여행': 'lightblue', '취미': 'lightgreen', 'IT_전자': 'lightcoral', '생활': 'lightskyblue', '패션_뷰티': 'lightpink', '교육': 'lightyellow', '의료': 'lightcyan', '외식': 'lightgrey'})
+        
+        fig1.update_layout(
+            title = '지출 분석',
+            legend_yanchor="top",
+            legend_y=1,
+            legend_xanchor="left",
+            legend_x=-0.1,
+            template='plotly_white'
+        )
+    
+        value_b = df1.fv[top_indices[0]]
+        data2 = {'category' : ['여행', '취미', 'IT_전자', '생활', '패션_뷰티', '교육', '의료', '외식'],
+                'value' : value_b }
+        figdf2 = pd.DataFrame(data2)
+    
+        fig2 = px.pie(figdf2
+                        , names='category'
+                        , values='value'
+                        , width=600
+                        , height=400
+                        , color_discrete_map={'여행': 'lightblue', '취미': 'lightgreen', 'IT_전자': 'lightcoral', '생활': 'lightskyblue', '패션_뷰티': 'lightpink', '교육': 'lightyellow', '의료': 'lightcyan', '외식': 'lightgrey'})
+        
+        fig2.update_layout(
+            title = '보도자료 분석',
+            legend_yanchor="top",
+            legend_y=1,
+            legend_xanchor="left",
+            legend_x=-0.1,
+            template='plotly_white'
+        )
+    
+        # 서브플롯에 추가
+        fig.add_trace(fig1['data'][0], row=1, col=1)
+        fig.add_trace(fig2['data'][0], row=1, col=2)
+    
+        fig.update_layout(
+            template='plotly_white'
+        )
+    
+        # Plotly 그래픽을 HTML로 변환
+        html_plot = pio.to_html(fig, full_html=False)
+    
+        sim = round(cos_sim(value_a, value_b) * 100, 1)
+    
+        st.info(f'**안녕하세요🙂 소비 패턴 분석을 통해 3개의 보도자료가 추천되었습니다.**')
+    
+        components.html(
+        f"""
+        <!doctype html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Bootstrap demo</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        </head>
+        <body>
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                        <strong>1st</strong>
+                    </button>
+                    </h2>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                    <font size=5>
+                    <font size=6><strong>📰 제목</strong></font><br>&nbsp"{df1.title[top_indices].iloc[0]}"<br><br>
+                    <font size=6><strong>📝 요약</strong></font><br>&nbsp{s1}<br>&nbsp{s2}<br><br>
+                    <font size=6><strong>🔑 키워드</strong></font><br><strong>&nbsp#</strong>{keywords_mmr[0][0]}<strong>&nbsp#</strong>{keywords_mmr[1][0]}<strong>&nbsp#</strong>{keywords_mmr[2][0]}<br><br>
+                    <font size=6><strong>👀 시각화</strong></font><br><br>&nbsp<img src="{wordcloud_html}" alt="wordcloud"><br><br>
+                    <font size=6><strong>✍ 분석결과 ➡ {sim}%</strong></font>{html_plot}<br><br>
+    
+                    </font></br>    
                     </div>
-                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-                </body>
-                </html>
-                """
-                ,height = 1500)
-
-
-            else:
-                st.warning("**고객 ID를 먼저 입력하신 뒤 버튼을 눌러주세요.**")
-        except:
-            st.warning("**고객 ID를 올바르게 다시 입력해주세요.**")
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                        <strong>2nd</strong>
+                    </button>
+                    </h2>
+                    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                        <strong>3rd</strong>
+                    </button>
+                    </h2>
+                    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                    </div>
+                </div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        </body>
+        </html>
+        """
+        ,height = 1500)
