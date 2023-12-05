@@ -1,29 +1,22 @@
-#라이브러리 import
-#필요한 경우 install
 import streamlit as st
-from keybert import KeyBERT
+import streamlit.components.v1 as components
+from PIL import Image
+import pandas as pd
+import random
 import matplotlib.pyplot as plt
 import plotly
 import plotly.express as px
-import seaborn as sns
-import numpy as np
-from numpy.linalg import norm
-from numpy import nan
-from numpy import dot
-import ast
-from PIL import Image
-import pandas as pd
-import time
-from konlpy.tag import Twitter
-from konlpy.tag import Okt
-from konlpy.tag import Kkma
-from PyKomoran import *
-
+import plotly.io as pio
 from collections import Counter
 from wordcloud import WordCloud
-import re
-import math
-from sklearn.preprocessing import normalize
+from io import BytesIO
+import base64
+from plotly.subplots import make_subplots
+from keybert import KeyBERT
+import numpy as np
+from numpy.linalg import norm
+from numpy import dot
+
 
 # plotly 시각화 오류시 실행시킬 코드
 #import plotly.offline as pyo
@@ -34,238 +27,238 @@ from sklearn.preprocessing import normalize
 #private 페이지를 위한 코드
 st.set_page_config(page_title="PRIVATE", page_icon="👤",layout = 'wide')
 
-image = Image.open('images/logo.png')
-image2 = Image.open('images/logo2.png')
-image3 = Image.open('images/logo3.png')
+# 직접 HTML 및 CSS를 사용하여 화면 비율 조정
+st.markdown(
+    """
+    <style>
+        body {
+            width: 100%;
+            margin: 0;
+        }
+        .stApp {
+            max-width: 1500px;  # 조정하려는 최대 너비
+            margin: auto;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-st.sidebar.image(image2, use_column_width=True)
-st.sidebar.image(image3, use_column_width=True)
+with st.spinner("# ⏳ 잠시만 기다려주세요."):
 
+    image = Image.open('images/logo2.png')
+    st.sidebar.image(image, use_column_width=True)
 
-#최상단에 이미지 넣기
-st.image(image2, width=300) 
+    #리스트를 문자열로 인식하는 문제 해결하는 함수
+    def parse_list(input_str):
 
+        return eval(input_str)
 
-#벡터가 문자열로 인식되는 문제 해결하는 함수
-def parse_list(input_str):
+    @st.cache_data
+    def load_data():
 
-    return eval(input_str)
+        # 보도자료
+        # fv : 모델링 결과
+        # wc : 배포시 konlpy java 환경변수 오류 때문에 명사 추출 결과를 컬럼에 미리 담아놓음
+        df1 = pd.read_csv("data/보도자료.csv", converters={'fv' : parse_list, 'wc' : parse_list,  'subsubtitle' : parse_list})
 
+        # 고객
+        df2 = pd.read_csv("data/고객.csv", converters={'feature' : parse_list})
 
-# 화면이 업데이트될 때 마다 변수 할당이 된다면 시간이 오래 걸려서 @st.cache_data 사용(캐싱)
-@st.cache_data
-def load_client_fv_data():
+        return df1,df2
 
-    client_fv = pd.read_csv("data/client_feature_vector.csv", converters={'feature': parse_list})
-
-    return client_fv
-
-client_fv = load_client_fv_data()
-
-
-@st.cache_data
-def daily_result_load_data():
-
-    daily_result = pd.read_csv("data/new_daily_result.csv", converters={'fv': parse_list,  'subsubtitle' : parse_list, 'wc' : parse_list})
-
-    return daily_result
-
-daily_result = daily_result_load_data()
-
-
-#코사인유사도를 위한 함수 정의
-def cos_sim(A, B):
-  return dot(A, B)/(norm(A)*norm(B))
-
-
-#하이퍼링크 만드는 함수
-def create_link_card(title, url):
-    container = st.container()
-    container.markdown(
-    f'<div class="link-card"><a href="{url}" target="_blank">{title}</a></div>',
-    unsafe_allow_html=True,
-    )
-    return container
+    df1, df2= load_data()
 
 
-st.markdown('''
-<h2>Daily Report For <span style="color: #6FA8DC;"> YOU 👤</span></h2>
-''', unsafe_allow_html=True)
-st.text('')
+    #코사인유사도를 위한 함수 정의
+    def cos_sim(A, B):
+        return dot(A, B)/(norm(A)*norm(B))
+
+    #하이퍼링크 만드는 함수
+    def create_link_card(title, url):
+        container = st.container()
+        container.markdown(
+        f'<div class="link-card"><a href="{url}" target="_blank">{title}</a></div>',
+        unsafe_allow_html=True,
+        )
+        return container
 
 
-#value 파라미터로 디폴트 값 지정 가능
-#페이지가 열리면 value 값이 자동으로 input_user_name에 할당됨
-input_user_name = st.text_input(label="**고객 ID를 먼저 입력하신 뒤 아래 버튼들을 눌러주세요.**", value = "") 
+    #value 파라미터로 디폴트 값 지정 가능
+    #페이지가 열리면 value 값이 자동으로 input_user_name에 할당됨
+    st.write(" ##### 고객 ID를 입력해주세요. 고객 ID의 앞자리는 연령대(1~8), 뒷자리는 성별(0,1)을 의미합니다.")
 
+    input_user_name = st.text_input(label="**고객 ID 예시) 20 : 20대 남자 , 41 : 40대 여자**", value = "") 
 
-#client_fv에 들어있는 고객ID인지 판단
-if input_user_name == '':
-    time.sleep(1)
-    is_included = True
-else:
-    is_included = int(input_user_name) in client_fv['고객ID'].values
-########################################################################################################################################
-col1, col2 = st.columns([5.5,4.5])
-
-with col1:
     if st.button("📰 추천 받기"):
-        if is_included:
-            con1 = st.container()
-            con1.caption("Result")
-            st.info(f'안녕하세요🙂 {str(input_user_name)} 님')
-            st.info(f"{str(input_user_name)} 님을 위한 추천 서비스입니다.")
+        try:
+            if input_user_name != '':
+                # 고객-보도자료 간의 코사인 유사도 계산
+                cosine_similarities = [cos_sim(df2[df2.고객ID == int(input_user_name)]['feature'].iloc[0], fv) for fv in df1.fv]
+                
+                # 가장 유사한 보도자료 상위 3개 값의 인덱스 찾기
+                top_indices = sorted(range(len(df1)), key=lambda i: cosine_similarities[i], reverse=True)[:3]
 
-            # linktree
-            st.markdown(
+                # 변수에 할당할 개수를 리스트의 길이에 맞게 조절 2개 이상이면 2개로. 1개는 오류남.
+                s1, s2, *_= df1.subsubtitle[top_indices[0]]
+
+                # KeyBERT
+                # 키워드 3개
+                n=3 
+                kw_model = KeyBERT()
+                keywords_mmr = kw_model.extract_keywords(df1.content[top_indices[0]],
+                                                        keyphrase_ngram_range=(1,1),
+                                                                use_mmr = False,
+                                                                top_n = n,
+                                                                diversity = 0.2,
+                                                                stop_words = [''])
+                # 워드클라우드`
+                words = df1.wc[top_indices[0]]
+
+                # 단어별 빈도수 형태의 딕셔너리 데이터를 구성
+                c = Counter(words) 
+
+                # 워드클라우드 생성 함수
+                def generate_wordcloud(c):
+                    wordcloud = WordCloud(
+                                width=750,
+                                height=450,
+                                font_path = 'malgun.ttf',
+                                background_color='white'#, 
+                                #colormap='Blues' 
+                                        ).generate_from_frequencies(c)
+
+                    # 이미지를 바이트 형식으로 변환하여 Base64로 인코딩
+                    img_buffer = BytesIO()
+                    wordcloud.to_image().save(img_buffer, format='PNG')
+                    img_str = "data:image/png;base64," + base64.b64encode(img_buffer.getvalue()).decode()
+
+                    return img_str
+
+                # 워드클라우드 생성
+                wordcloud_html = generate_wordcloud(c)
+
+
+                # 서브플롯 생성
+                fig = make_subplots(rows=1, cols=2, subplot_titles=['지출 분석', '보도자료 분석'], specs=[[{'type': 'pie'}, {'type': 'pie'}]])
+
+                value_a = df2[df2.고객ID == int(input_user_name)]['feature'].iloc[0]
+                data1 = {'category' : ['여행', '취미', 'IT_전자', '생활', '패션_뷰티', '교육', '의료', '외식'],
+                        'value' : value_a }
+                figdf1 = pd.DataFrame(data1)
+
+                fig1 = px.pie(figdf1
+                                , names='category'
+                                , values='value'
+                                , width=600
+                                , height=400
+                                , color_discrete_map={'여행': 'lightblue', '취미': 'lightgreen', 'IT_전자': 'lightcoral', '생활': 'lightskyblue', '패션_뷰티': 'lightpink', '교육': 'lightyellow', '의료': 'lightcyan', '외식': 'lightgrey'})
+                
+                fig1.update_layout(
+                    title = '지출 분석',
+                    legend_yanchor="top",
+                    legend_y=1,
+                    legend_xanchor="left",
+                    legend_x=-0.1,
+                    template='plotly_white'
+                )
+
+                value_b = df1.fv[top_indices[0]]
+                data2 = {'category' : ['여행', '취미', 'IT_전자', '생활', '패션_뷰티', '교육', '의료', '외식'],
+                        'value' : value_b }
+                figdf2 = pd.DataFrame(data2)
+
+                fig2 = px.pie(figdf2
+                                , names='category'
+                                , values='value'
+                                , width=600
+                                , height=400
+                                , color_discrete_map={'여행': 'lightblue', '취미': 'lightgreen', 'IT_전자': 'lightcoral', '생활': 'lightskyblue', '패션_뷰티': 'lightpink', '교육': 'lightyellow', '의료': 'lightcyan', '외식': 'lightgrey'})
+                
+                fig2.update_layout(
+                    title = '보도자료 분석',
+                    legend_yanchor="top",
+                    legend_y=1,
+                    legend_xanchor="left",
+                    legend_x=-0.1,
+                    template='plotly_white'
+                )
+
+                # 서브플롯에 추가
+                fig.add_trace(fig1['data'][0], row=1, col=1)
+                fig.add_trace(fig2['data'][0], row=1, col=2)
+
+                fig.update_layout(
+                    template='plotly_white'
+                )
+
+                # Plotly 그래픽을 HTML로 변환
+                html_plot = pio.to_html(fig, full_html=False)
+
+                sim = round(cos_sim(value_a, value_b) * 100, 1)
+
+                st.info(f'**안녕하세요🙂 소비 패턴 분석을 통해 3개의 보도자료가 추천되었습니다.**')
+
+                components.html(
+                f"""
+                <!doctype html>
+                <html lang="en">
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <title>Bootstrap demo</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+                </head>
+                <body>
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                <strong>1st</strong>
+                            </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                            <font size=5>
+                            <font size=6><strong>📰 제목</strong></font><br>&nbsp"{df1.title[top_indices].iloc[0]}"<br><br>
+                            <font size=6><strong>📝 요약</strong></font><br>&nbsp{s1}<br>&nbsp{s2}<br><br>
+                            <font size=6><strong>🔑 키워드</strong></font><br><strong>&nbsp#</strong>{keywords_mmr[0][0]}<strong>&nbsp#</strong>{keywords_mmr[1][0]}<strong>&nbsp#</strong>{keywords_mmr[2][0]}<br><br>
+                            <font size=6><strong>👀 시각화</strong></font><br><br>&nbsp<img src="{wordcloud_html}" alt="wordcloud"><br><br>
+                            <font size=6><strong>✍ 분석결과 ➡ {sim}%</strong></font>{html_plot}<br><br>
+
+                            </font></br>    
+                            </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                <strong>2nd</strong>
+                            </button>
+                            </h2>
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                <strong>3rd</strong>
+                            </button>
+                            </h2>
+                            <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+                </body>
+                </html>
                 """
-            <style>
-            .link-card {
-                display: flex;
-                flex-direction: column;
-                padding: 5px;
-                margin-bottom: 10px;
-                border: 1px solid #E8DDDA;
-                border-radius: 15px;
-                background-color: white; 
-                box-shadow: 0px 0px 5px #F4EDEC;
-            }
-            .link-card:hover {
-            background-color: #FFF6F3;
-            }
-            a {
-                color: black!important;
-                text-decoration: none!important;
-            }
-            </style>
-            """,
-                unsafe_allow_html=True,
-            )
+                ,height = 1500)
 
-            # 코사인 유사도 계산
-            cosine_similarities = [cos_sim(client_fv[client_fv.고객ID == int(input_user_name)]['feature'].iloc[0], fv) for fv in daily_result.fv]
 
-            # 상위 1개 값의 인덱스 찾기
-            top_indices = sorted(range(len(daily_result)), key=lambda i: cosine_similarities[i], reverse=True)[:1]
-########################################################################################################################################
-            st.subheader("📰 제목")
-            st.write(f'**"{daily_result.title[top_indices].iloc[0]}"**')
-            st.write('')
-########################################################################################################################################     
-            st.subheader("👀 시각화")
-
-            #워드클라우드에 사용하기 위해 명사 추출된 거 가져오기
-            #배포시 Konlpy, Pykomoran은 java 환경변수 이슈 때문에 사용 불가. 로컬에서 명사 추출 후 데이터프레임에 추가해서 사용.
-            
-            words = daily_result.wc[top_indices[0]]
-
-            # 위에서 얻은 words를 처리하여 단어별 빈도수 형태의 딕셔너리 데이터를 구성
-            c = Counter(words) 
-
-            # wordcloud
-            wordcloud = WordCloud(
-                font_path = 'data/MALGUN.TTF',
-                background_color='white', 
-                colormap='Blues' 
-            ).generate_from_frequencies(c)
-
-            fig1 = plt.figure()
-            plt.imshow(wordcloud,interpolation='bilinear')
-            plt.axis('off')
-            plt.show()
-            st.pyplot(fig1)
-            st.write('')
-########################################################################################################################################
-            st.subheader("📝 요약")
-
-            # '\xa0'를 지우는 함수 정의
-            def remove_non_breaking_space(value_list):
-                return [value.replace('\xa0', '') for value in value_list]
-
-            daily_result.subsubtitle = daily_result.subsubtitle.apply(remove_non_breaking_space)
-
-            for i in range(len(daily_result.subsubtitle[top_indices[0]])):
-                st.write(daily_result.subsubtitle[top_indices[0]][i])
-
-            st.write('')
-#########################################################################################################################################
-            st.subheader("🔑 키워드")
-            kw_model = KeyBERT()
-
-            #키워드 3개
-            n=3 
-
-            keywords_mmr = kw_model.extract_keywords(daily_result.content[top_indices[0]],
-                                                              keyphrase_ngram_range=(1,1),
-                                                              use_mmr = False,
-                                                              top_n = n,
-                                                              diversity = 0.2,
-                                                              stop_words = [''])
-
-            st.write('#'+keywords_mmr[0][0],' ', '#'+keywords_mmr[1][0],' ', '#'+keywords_mmr[2][0])
-            st.write('')
-########################################################################################################################################
-            st.write('')
-        else:
-            st.warning(f"{input_user_name}는 올바른 고객ID가 아닙니다. 다시 입력해주세요.")
-########################################################################################################################################
-with col2:
-    if st.button("📒 상세 레포트 보기"):
-        if is_included:
-            con2 = st.container()
-            con2.caption("Result")
-            st.info(f"결제데이터를 통해 파악한 {input_user_name} 님의 소비성향입니다. 👇")
-            con2.write("")
-
-            # 코사인 유사도 계산
-            cosine_similarities = [cos_sim(client_fv[client_fv.고객ID == int(input_user_name)]['feature'].iloc[0], fv) for fv in daily_result.fv]
-
-            # 상위 1개 값의 인덱스 찾기
-            top_indices = sorted(range(len(daily_result)), key=lambda i: cosine_similarities[i], reverse=True)[:1]
-########################################################################################################################################
-            value_a = client_fv[client_fv.고객ID == int(input_user_name)]['feature'].iloc[0]
-            data = {'category' : ['여행', '취미', 'IT_전자', '생활', '패션_뷰티', '교육', '의료', '외식'],
-                    'value' : value_a }
-            df1 = pd.DataFrame(data)
-
-            fig1 = px.pie(df1, names='category', values='value',width=600, height=400)
-            fig1.update_layout(
-                legend_yanchor="top",
-                legend_y=1,
-                legend_xanchor="left",
-                legend_x=-0.1
-            )
-            st.plotly_chart(fig1)
-########################################################################################################################################            
-            st.info(f"{str(input_user_name)} 님에게 추천된 보도자료의 성향입니다. 👇")
-
-            value_b = daily_result.fv[top_indices[0]]
-            data = {'category' : ['여행', '취미', 'IT_전자', '생활', '패션_뷰티', '교육', '의료', '외식'],
-                    'value' : value_b }
-            df2 = pd.DataFrame(data)
-
-            fig2 = px.pie(df2, names='category', values='value',width=600, height=400)
-            fig2.update_layout(
-                legend_yanchor="top",
-                legend_y=1,
-                legend_xanchor="left",
-                legend_x=-0.1
-            )
-            st.plotly_chart(fig2)
-########################################################################################################################################
-            st.info(f"{str(input_user_name)} 님의 소비 성향과 보도자료의 유사도는❓")
-            sim = round(cos_sim(value_a, value_b) * 100, 1)
-
-            col1, col2 , col3 = st.columns([4,2,4])
-
-            with col1:
-                st.text('')
-            with col2:
-                st.subheader(f"  {sim}%")
-            with col3:
-                st.text('')
-
-        # 예외처리
-        else:
-            st.warning(f"{input_user_name}는 올바른 고객ID가 아닙니다. 다시 입력해주세요.")
-
+            else:
+                st.warning("**고객 ID를 먼저 입력하신 뒤 버튼을 눌러주세요.**")
+        except:
+            st.warning("**고객 ID를 올바르게 다시 입력해주세요.**")
