@@ -138,7 +138,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                     wordcloud = WordCloud(
                                 width=750,
                                 height=450,
-                                font_path = 'malgun.ttf',
+                                font_path = 'data/MALGUN.TTF',
                                 background_color='white'#, 
                                 #colormap='Blues' 
                                         ).generate_from_frequencies(c)
