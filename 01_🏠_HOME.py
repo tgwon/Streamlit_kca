@@ -21,7 +21,7 @@ st.markdown(
             margin: 0;
         }
         .stApp {
-            max-width: 2300px;  # 조정하려는 최대 너비
+            max-width: 1500px;  # 조정하려는 최대 너비
             margin: auto;
         }
     </style>
@@ -38,7 +38,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
     st.sidebar.image(image2, use_column_width=True)
 
     #최상단에 이미지 넣기
-    st.image(image, width=1730) 
+    st.image(image, width=1050) 
 
     #리스트를 문자열로 인식하는 문제 해결하는 함수
     def parse_list(input_str):
@@ -124,11 +124,11 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         </head>
         <body>
-        <font size=5>
-        <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
+        <font size=3>
+        <div class="card" style="width: 21rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
-                .card-title strong {{font-size: 2em;}}
+                .card-title strong {{font-size: 1.4em;}}
             </style>
             <h5 class="card-title"><strong>🗞 보도자료</strong></h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
@@ -162,7 +162,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </body>
         </html>
         """
-        ,height=345
+        ,height=300
         )
 
 
@@ -177,12 +177,12 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         </head>
         <body>
-            <font size=5>
-                <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
+            <font size=3>
+                <div class="card" style="width: 21rem; background-color: #F0FAFF;">
                     <img src="{recall_image_list[random_number]}" class="card-img-top" alt="...">
                     <div class="card-body">
                     <style>
-                        .card-title strong {{font-size: 2em;}}
+                        .card-title strong {{font-size: 1.4em;}}
                     </style>
                     <h5 class="card-title"><strong>📰 국내리콜정보</strong></h5>
                     <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
@@ -190,7 +190,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                             <thead>
                                 <td class="table-secondary"><strong>제품명</strong></td>
                                 <td class="table-secondary"><strong>사업자명</strong></td>
-                                <td class="table-secondary"><strong>리콜공표일</strong></td>
+                                <td class="table-secondary"><strong>공표일</strong></td>
 
                             </thead>
                             <tbody>
@@ -244,11 +244,11 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         </head>
         <body>
-        <font size=5>
-        <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
+        <font size=3>
+        <div class="card" style="width: 21rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
-                .card-title strong {{font-size: 2em;}}
+                .card-title strong {{font-size: 1.4em;}}
             </style>
             <h5 class="card-title"><strong>🔊 피해예방주의보</strong></h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
@@ -282,7 +282,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </body>
         </html>
         """
-        ,height=345
+        ,height=300
         )
 
         components.html(
@@ -296,11 +296,11 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         </head>
         <body>
-        <font size=5>
-        <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
+        <font size=3>
+        <div class="card" style="width: 21rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
-                .card-title strong {{font-size: 2em;}}
+                .card-title strong {{font-size: 1.4em;}}
             </style>
             <h5 class="card-title"><strong>🧺 상담다발품목</strong></h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
@@ -375,13 +375,13 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         </head>
         <body>
-        <font size=5>
-        <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
+        <font size=3>
+        <div class="card" style="width: 21rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
-                .card-title strong {{font-size: 2em;}}
+                .card-title strong {{font-size: 1.4em;}}
             </style>
-            <h5 class="card-title"><strong>🔊 소비자 안전주의보</strong></h5>
+            <h5 class="card-title"><strong>🔊 소비자안전주의보</strong></h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
             <p class="card-text"><strong>"{news3}"</strong></p>
             <h6 class="card-subtitle mb-2 text-body-secondary">: {subnews3}</h6>
@@ -413,7 +413,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </body>
         </html>
         """
-        ,height=345
+        ,height=300
         )
 
 
@@ -428,13 +428,13 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         </head>
         <body>
-        <font size=5>
-        <div class="card" style="width: 31.5rem; background-color: #F0FAFF;">
+        <font size=3>
+        <div class="card" style="width: 21rem; background-color: #F0FAFF;">
         <div class="card-body">
             <style>
-                .card-title strong {{font-size: 2em;}}
+                .card-title strong {{font-size: 1.5em;}}
             </style>
-            <h5 class="card-title"><strong>📚 오늘의 소비자 단어</strong></h5>
+            <h5 class="card-title"><strong>📚 소비자 단어</strong></h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
             <p class="card-text"><strong>"{word1}"</strong></p>
             <p class="card-text"><strong>: {word2}</strong></p>
