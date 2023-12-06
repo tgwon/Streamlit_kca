@@ -38,7 +38,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
     st.sidebar.image(image2, use_column_width=True)
 
     #최상단에 이미지 넣기
-    st.image(image, width=1050) 
+    st.image(image, width=1000) 
 
     #리스트를 문자열로 인식하는 문제 해결하는 함수
     def parse_list(input_str):
@@ -163,6 +163,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </html>
         """
         ,height=300
+        ,width=360
         )
 
 
@@ -229,6 +230,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </body>
         </html>
         """
+        ,width=360
         ,height=700
         )
     
@@ -283,6 +285,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </html>
         """
         ,height=300
+        ,width=360
         )
 
         components.html(
@@ -361,6 +364,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </html>
         """
         ,height=700
+        ,width=360
         )
 
     with cc[2]:
@@ -414,6 +418,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </html>
         """
         ,height=300
+        ,width=360
         )
 
 
@@ -467,4 +472,5 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         </html>
         """
         ,height=500
+        ,width=360
         )
