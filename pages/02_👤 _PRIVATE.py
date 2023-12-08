@@ -514,7 +514,7 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                         font=dict(size=20),
                         width=800,
                         height=550,
-                        emplate='plotly_white',
+                        template='plotly_white',
                         title_x=0.5
                     )
 
@@ -893,7 +893,9 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
                         title_x=0.5
                     )
 
-                    gender = pio.to_html(g, full_html=False)
+                    gender1 = pio.to_html(g, full_html=False)
+                    gender2 = pio.to_html(g, full_html=False)
+                    gender3 = pio.to_html(g, full_html=False)
 
                 elif input_user_name == '81':
 
