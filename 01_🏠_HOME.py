@@ -53,15 +53,12 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         # wc : 배포시 konlpy java 환경변수 오류 때문에 명사 추출 결과를 컬럼에 미리 담아놓음
         df1 = pd.read_csv("data/보도자료.csv", converters={'fv' : parse_list, 'wc' : parse_list})
 
-        # 상담다발품목
-        df2 = pd.read_csv("data/상담다발품목.csv")
-
          # 소비자 단어
         df3 = pd.read_csv("data/소비자단어.csv")
 
-        return df1,df2,df3
+        return df1,df3
 
-    df1, df2, df3 = load_data()
+    df1,  df3 = load_data()
 
     # Home 화면에서 랜덤으로 보여줄 보도자료 정보 담아두기
     random1 = df1[['title','subtitle']].sample(n=3, replace=False) 
@@ -72,22 +69,6 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
     news3 = random1.title.values[2]
     subnews3 = random1.subtitle.values[2]
 
-
-    # Home 화면에서 랜덤으로 보여줄 상담다발품목 정보 담아두기
-    # 품목, 피해유형, 거래유형
-    random2 = df2[['GDNM','CNSL_RSN','SLL_MTD_NM']].sample(n=4, replace=False) 
-    product1 = random2.GDNM.values[0]
-    type11 = random2.CNSL_RSN.values[0]
-    type21 = random2.SLL_MTD_NM.values[0]
-    product2 = random2.GDNM.values[1]
-    type12 = random2.CNSL_RSN.values[1]
-    type22 = random2.SLL_MTD_NM.values[1]
-    product3 = random2.GDNM.values[2]
-    type13 = random2.CNSL_RSN.values[2]
-    type23 = random2.SLL_MTD_NM.values[2]
-    product4 = random2.GDNM.values[3]
-    type14 = random2.CNSL_RSN.values[3]
-    type24 = random2.SLL_MTD_NM.values[3]
 
     # Home 화면에서 랜덤으로 보여줄 소비자단어 정보 담아두기
     random3 = df3[['단어','뜻','url']].sample(n=1, replace=False) 
@@ -288,84 +269,6 @@ with st.spinner("# ⏳ 잠시만 기다려주세요."):
         ,width=360
         )
 
-        components.html(
-        f"""
-        <!doctype html>
-        <html lang="en">
-        <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Bootstrap demo</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        </head>
-        <body>
-        <font size=3>
-        <div class="card" style="width: 21rem; background-color: #F0FAFF;">
-        <div class="card-body">
-            <style>
-                .card-title strong {{font-size: 1.4em;}}
-            </style>
-            <h5 class="card-title"><strong>🧺 상담다발품목</strong></h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">&nbsp</h6>
-            <table class="table">
-            <thead>
-                <td class="table-secondary"><strong>품목</strong></td>
-                <td class="table-secondary"><strong>피해유형</strong></td>
-                <td class="table-secondary"><strong>거래유형</strong></td>
-            </thead>
-            <tbody>
-                <tr>
-                <td>{product1}</td>
-                <td>{type11}</td>
-                <td>{type21}</td>
-                </tr>
-                <tr>
-                <td>{product2}</td>
-                <td>{type12}</td>
-                <td>{type22}</td>
-                </tr>
-                <tr>
-                <td>{product3}</td>
-                <td>{type13}</td>
-                <td>{type23}</td>
-                </tr>
-                <tr>
-                <td>{product4}</td>
-                <td>{type14}</td>
-                <td>{type24}</td>
-                </tr>
-            </tbody>
-            </table>
-            <style>
-            .link-card {{
-                display: flex;
-                flex-direction: column;
-                padding: 5px;
-                margin-bottom: 10px;
-                border: 1px solid #E8DDDA;
-                border-radius: 15px;
-                background-color: white; 
-                box-shadow: 0px 0px 5px #F4EDEC;
-            }}
-            .link-card:hover {{
-            background-color: #DEEFFF;
-            }}
-            a {{
-                color: black!important;
-                text-decoration: none!important;
-            }}
-            </style>
-            <div class="link-card"><a href="https://crossborder.kca.go.kr/home/sub.do?menukey=134" target="_blank">🔍 더 많은 정보를 알아보세요.</a></div>
-        </div>
-        </div>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-        </font></br>
-        </body>
-        </html>
-        """
-        ,height=700
-        ,width=360
-        )
 
     with cc[2]:
         components.html(
